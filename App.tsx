@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Block, Device, BlockType } from './types';
 import { AVAILABLE_BLOCKS } from './constants';
@@ -7,11 +6,16 @@ import Canvas from './components/Canvas';
 import DeviceToolbar from './components/DeviceToolbar';
 import { GenerateWithAIModal } from './components/GenerateWithAIModal';
 import { LogoIcon } from './components/icons/LogoIcon';
+import { useApiKey } from './context/ApiKeyContext';
+import ApiKeyModal from './components/ApiKeyModal';
+import { KeyIcon } from './components/icons/KeyIcon';
 
 export default function App() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [previewDevice, setPreviewDevice] = useState<Device>('desktop');
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const { apiKey } = useApiKey();
 
   const handleDrop = useCallback((item: { type: BlockType }, index: number) => {
     const blockConfig = AVAILABLE_BLOCKS.flatMap(cat => cat.blocks).find(b => b.type === item.type);
@@ -52,6 +56,13 @@ export default function App() {
     }
   }, [blocks]);
 
+  const handleGenerateClick = () => {
+    if (apiKey) {
+      setIsAiModalOpen(true);
+    } else {
+      setIsApiKeyModalOpen(true);
+    }
+  };
 
   return (
     <div className="flex h-screen w-screen font-sans bg-slate-100 text-slate-800 overflow-hidden">
@@ -64,17 +75,26 @@ export default function App() {
                 <LogoIcon />
                 <h1 className="text-xl font-bold text-slate-700">Builder</h1>
               </div>
-              <DeviceToolbar currentDevice={previewDevice} onDeviceChange={setPreviewDevice} />
-              <button
-                onClick={() => setIsAiModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 3a1 1 0 00-1 1v5H4a1 1 0 100 2h5v5a1 1 0 102 0v-5h5a1 1 0 100-2h-5V4a1 1 0 00-1-1z" clipRule="evenodd" />
-                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM2 10a8 8 0 1116 0 8 8 0 01-16 0z" />
-                </svg>
-                Generate with AI
-              </button>
+              <div className="flex items-center gap-4">
+                <DeviceToolbar currentDevice={previewDevice} onDeviceChange={setPreviewDevice} />
+                <div className="h-8 border-l border-slate-200"></div>
+                <button
+                  onClick={() => setIsApiKeyModalOpen(true)}
+                  className="p-2 text-slate-500 rounded-md hover:bg-slate-100 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                  title="Set API Key"
+                >
+                  <KeyIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={handleGenerateClick}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  Generate with AI
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -89,6 +109,7 @@ export default function App() {
         />
       </main>
       {isAiModalOpen && <GenerateWithAIModal onClose={() => setIsAiModalOpen(false)} setBlocks={setBlocks} />}
+      {isApiKeyModalOpen && <ApiKeyModal onClose={() => setIsApiKeyModalOpen(false)} />}
     </div>
   );
 }

@@ -2,14 +2,6 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { BlockType } from '../types';
 import { AVAILABLE_BLOCKS } from '../constants';
 
-const API_KEY = process.env.API_KEY;
-
-if (!API_KEY) {
-    console.warn("Gemini API key not found. AI features will be disabled. Make sure to set the API_KEY environment variable.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
-
 const allBlockTypes = AVAILABLE_BLOCKS.flatMap(cat => cat.blocks.map(b => b.type));
 
 const responseSchema = {
@@ -72,10 +64,12 @@ const responseSchema = {
     }
 };
 
-export const generatePageLayout = async (prompt: string): Promise<{ type: BlockType, props: Record<string, any> }[]> => {
-    if (!API_KEY) {
-        throw new Error("API key is not configured.");
+export const generatePageLayout = async (prompt: string, apiKey: string): Promise<{ type: BlockType, props: Record<string, any> }[]> => {
+    if (!apiKey) {
+        throw new Error("API key is not configured. Please set your API key in the settings.");
     }
+
+    const ai = new GoogleGenAI({ apiKey });
 
     try {
         const response = await ai.models.generateContent({
@@ -119,8 +113,11 @@ Generate compelling and relevant text for all properties. Do not use placeholder
 
         return layout.filter(item => allBlockTypes.includes(item.type));
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error calling Gemini API:", error);
+        if (error.message.includes('API key not valid')) {
+             throw new Error("Your Gemini API key is not valid. Please check it in the settings.");
+        }
         throw new Error("Failed to generate page layout. Please check your prompt or API key.");
     }
 };
