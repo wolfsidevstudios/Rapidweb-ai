@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { generatePageLayout } from '../services/geminiService';
 import { Block } from '../types';
 import { AVAILABLE_BLOCKS } from '../constants';
-import { useApiKey } from '../context/ApiKeyContext';
 
 interface GenerateWithAIModalProps {
   onClose: () => void;
@@ -13,14 +12,9 @@ export const GenerateWithAIModal: React.FC<GenerateWithAIModalProps> = ({ onClos
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { apiKey } = useApiKey();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!apiKey) {
-      setError('Please set your Gemini API key in the settings before generating a layout.');
-      return;
-    }
     if (!prompt.trim()) {
       setError('Please enter a description for your website.');
       return;
@@ -29,10 +23,10 @@ export const GenerateWithAIModal: React.FC<GenerateWithAIModalProps> = ({ onClos
     setError(null);
 
     try {
-      const layoutWithContent = await generatePageLayout(prompt, apiKey);
-      // FIX: Explicitly type the return of the map function to `Block | null`.
-      // This resolves a TypeScript error where the inferred type from the returned object (with a required `props` property)
-      // was not compatible with the `Block` type (which has an optional `props` property) used in the `.filter` type predicate.
+      // FIX: API key is no longer passed as an argument.
+      // The service now retrieves it from environment variables.
+      const layoutWithContent = await generatePageLayout(prompt);
+      
       const newBlocks: Block[] = layoutWithContent.map((item, index): Block | null => {
         const blockConfig = AVAILABLE_BLOCKS.flatMap(cat => cat.blocks).find(b => b.type === item.type);
         if (!blockConfig) return null;
@@ -40,7 +34,7 @@ export const GenerateWithAIModal: React.FC<GenerateWithAIModalProps> = ({ onClos
           id: new Date().getTime() + index,
           type: item.type,
           component: blockConfig.component,
-          props: item.props,
+          props: { ...blockConfig.defaultProps, ...item.props },
         };
       }).filter((b): b is Block => b !== null);
       

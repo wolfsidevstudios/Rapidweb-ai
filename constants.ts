@@ -1,5 +1,4 @@
-
-import { Category } from './types';
+import { BlockType } from './types';
 import Navbar from './components/blocks/Navbar';
 import Hero from './components/blocks/Hero';
 import Features from './components/blocks/Features';
@@ -25,37 +24,45 @@ import { TeamIcon } from './components/icons/TeamIcon';
 import { StatsIcon } from './components/icons/StatsIcon';
 import { LogoCloudIcon } from './components/icons/LogoCloudIcon';
 
-export const AVAILABLE_BLOCKS: Category[] = [
+interface BlockConfig {
+  name: string;
+  type: BlockType;
+  component: React.FC<any>;
+  icon: React.FC<{ className?: string }>;
+  defaultProps: Record<string, any>;
+}
+
+interface BlockCategory {
+  name: string;
+  blocks: BlockConfig[];
+}
+
+export const AVAILABLE_BLOCKS: BlockCategory[] = [
   {
-    name: 'Headers & Footers',
+    name: 'Layout',
     blocks: [
-      { type: 'Navbar', name: 'Navigation Bar', component: Navbar, icon: NavbarIcon },
-      { type: 'Footer', name: 'Footer Section', component: Footer, icon: FooterIcon },
+      { name: 'Navbar', type: 'navbar', component: Navbar, icon: NavbarIcon, defaultProps: { logoText: 'Logo', links: [{ text: 'Home', href: '#' }, { text: 'About', href: '#' }, { text: 'Contact', href: '#' }], buttonText: 'Sign Up' } },
+      { name: 'Hero', type: 'hero', component: Hero, icon: HeroIcon, defaultProps: { title: 'Build Your Next Website', subtitle: 'Create beautiful, responsive websites in minutes.', primaryButtonText: 'Get Started', secondaryButtonText: 'Learn More' } },
+      { name: 'Footer', type: 'footer', component: Footer, icon: FooterIcon, defaultProps: { text: `© ${new Date().getFullYear()} Your Company. All rights reserved.`, links: [{ text: 'Privacy', href: '#' }, { text: 'Terms', href: '#' }] } },
+    ],
+  },
+  {
+    name: 'Content',
+    blocks: [
+      { name: 'Features', type: 'features', component: Features, icon: FeaturesIcon, defaultProps: { title: 'Features', subtitle: 'Everything you need to succeed.', features: [{ name: 'Feature One', description: 'Description for feature one.' }, { name: 'Feature Two', description: 'Description for feature two.' }, { name: 'Feature Three', description: 'Description for feature three.' }] } },
+      { name: 'Testimonials', type: 'testimonials', component: Testimonials, icon: TestimonialsIcon, defaultProps: { title: 'What Our Customers Say', testimonials: [{ quote: 'This is a fantastic product!', author: 'Jane Doe', role: 'CEO, Example Inc.' }, { quote: 'I love how easy it is to use.', author: 'John Smith', role: 'Developer' }] } },
+      { name: 'Gallery', type: 'gallery', component: Gallery, icon: GalleryIcon, defaultProps: { title: 'Our Gallery', images: ['https://via.placeholder.com/400x300', 'https://via.placeholder.com/400x300', 'https://via.placeholder.com/400x300'] } },
+      { name: 'Team', type: 'team', component: Team, icon: TeamIcon, defaultProps: { title: 'Meet Our Team', members: [{ name: 'Person One', role: 'Founder', imageUrl: 'https://via.placeholder.com/150' }, { name: 'Person Two', role: 'Designer', imageUrl: 'https://via.placeholder.com/150' }] } },
+      { name: 'Stats', type: 'stats', component: Stats, icon: StatsIcon, defaultProps: { stats: [{ value: '10k+', label: 'Users' }, { value: '98%', label: 'Satisfaction' }, { value: '1M+', label: 'Downloads' }] } },
     ]
   },
   {
-    name: 'Heroes & Calls to Action',
+    name: 'Marketing',
     blocks: [
-      { type: 'Hero', name: 'Hero Section', component: Hero, icon: HeroIcon },
-      { type: 'CallToAction', name: 'Call To Action', component: CallToAction, icon: CtaIcon },
-    ]
-  },
-  {
-    name: 'Content & Features',
-    blocks: [
-      { type: 'Features', name: 'Features Grid', component: Features, icon: FeaturesIcon },
-      { type: 'Gallery', name: 'Image Gallery', component: Gallery, icon: GalleryIcon },
-      { type: 'Stats', name: 'Stats Section', component: Stats, icon: StatsIcon },
-      { type: 'LogoCloud', name: 'Logo Cloud', component: LogoCloud, icon: LogoCloudIcon },
-    ]
-  },
-  {
-    name: 'Social & Business',
-    blocks: [
-      { type: 'Testimonials', name: 'Testimonials', component: Testimonials, icon: TestimonialsIcon },
-      { type: 'Team', name: 'Team Section', component: Team, icon: TeamIcon },
-      { type: 'Pricing', name: 'Pricing Table', component: Pricing, icon: PricingIcon },
-      { type: 'Contact', name: 'Contact Form', component: Contact, icon: ContactIcon },
+      { name: 'Call To Action', type: 'cta', component: CallToAction, icon: CtaIcon, defaultProps: { title: 'Ready to dive in?', subtitle: 'Start your free trial today.', buttonText: 'Get Started' } },
+      { name: 'Pricing', type: 'pricing', component: Pricing, icon: PricingIcon, defaultProps: { title: 'Our Pricing', plans: [{ name: 'Basic', price: '$10/mo', features: ['Feature A', 'Feature B'] }, { name: 'Pro', price: '$25/mo', features: ['Feature A', 'Feature B', 'Feature C'] }] } },
+      { name: 'Logo Cloud', type: 'logocloud', component: LogoCloud, icon: LogoCloudIcon, defaultProps: { title: 'Trusted By', logos: ['https://via.placeholder.com/150x60/d1d5db/808080?text=Logo', 'https://via.placeholder.com/150x60/d1d5db/808080?text=Logo'] } },
+      { name: 'Contact', type: 'contact', component: Contact, icon: ContactIcon, defaultProps: { title: 'Contact Us', description: 'We\'d love to hear from you.', buttonText: 'Send Message' } },
     ]
   }
 ];
