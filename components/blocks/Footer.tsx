@@ -1,6 +1,4 @@
-
 import React from 'react';
-import { BlockComponentProps } from '../../types';
 import { LogoIcon } from '../icons/LogoIcon';
 
 const navigation = {
@@ -29,7 +27,15 @@ const navigation = {
   ],
 }
 
-const Footer: React.FC<BlockComponentProps> = () => {
+interface FooterProps {
+  brandName?: string;
+  description?: string;
+}
+
+const Footer: React.FC<FooterProps> = ({
+  brandName = 'MySite',
+  description = 'Making the web a more beautiful place, one block at a time.'
+}) => {
   return (
     <footer className="bg-gray-800" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
@@ -40,9 +46,9 @@ const Footer: React.FC<BlockComponentProps> = () => {
           <div className="space-y-8 xl:col-span-1">
             <div className="flex items-center gap-2">
               <LogoIcon className="text-white h-8 w-8"/>
-              <span className="text-white font-bold text-xl">MySite</span>
+              <span className="text-white font-bold text-xl">{brandName}</span>
             </div>
-            <p className="text-gray-400 text-base">Making the web a more beautiful place, one block at a time.</p>
+            <p className="text-gray-400 text-base">{description}</p>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
@@ -100,7 +106,7 @@ const Footer: React.FC<BlockComponentProps> = () => {
           </div>
         </div>
         <div className="mt-12 border-t border-gray-700 pt-8">
-          <p className="text-base text-gray-400 xl:text-center">&copy; {new Date().getFullYear()} MySite, Inc. All rights reserved.</p>
+          <p className="text-base text-gray-400 xl:text-center">&copy; {new Date().getFullYear()} {brandName}, Inc. All rights reserved.</p>
         </div>
       </div>
     </footer>

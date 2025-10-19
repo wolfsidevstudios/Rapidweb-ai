@@ -1,6 +1,4 @@
-
 import React from 'react';
-import { BlockComponentProps } from '../../types';
 
 const images = [
   'https://picsum.photos/id/10/600/600',
@@ -11,17 +9,25 @@ const images = [
   'https://picsum.photos/id/60/600/600',
 ];
 
-const Gallery: React.FC<BlockComponentProps> = () => {
+interface GalleryProps {
+  title?: string;
+  subtitle?: string;
+}
+
+const Gallery: React.FC<GalleryProps> = ({
+  title = 'A Glimpse into Our Portfolio',
+  subtitle = 'Browse through a selection of our finest work, showcasing our creativity and attention to detail.'
+}) => {
   return (
     <div className="bg-white py-12 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">Our Work</h2>
           <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            A Glimpse into Our Portfolio
+            {title}
           </p>
           <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
-            Browse through a selection of our finest work, showcasing our creativity and attention to detail.
+            {subtitle}
           </p>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

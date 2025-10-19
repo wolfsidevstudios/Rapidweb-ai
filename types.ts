@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export type BlockType = 
@@ -19,16 +18,15 @@ export interface Block {
   id: number;
   type: BlockType;
   component: React.FC<any>;
+  props?: Record<string, any>;
 }
 
 export type Device = 'mobile' | 'tablet' | 'desktop';
 
-export interface BlockComponentProps {}
-
 export interface BlockConfig {
   type: BlockType;
   name: string;
-  component: React.FC<BlockComponentProps>;
+  component: React.FC<any>;
   icon: React.FC<{className?: string}>;
 }
 

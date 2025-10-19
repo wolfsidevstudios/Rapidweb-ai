@@ -1,9 +1,17 @@
-
 import React, { useState } from 'react';
-import { BlockComponentProps } from '../../types';
 import { LogoIcon } from '../icons/LogoIcon';
 
-const Navbar: React.FC<BlockComponentProps> = () => {
+interface NavbarProps {
+  brandName?: string;
+  links?: string[];
+  ctaText?: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({
+  brandName = 'MySite',
+  links = ['Home', 'Features', 'Pricing', 'About'],
+  ctaText = 'Get Started'
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,19 +21,18 @@ const Navbar: React.FC<BlockComponentProps> = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center gap-2">
               <LogoIcon />
-              <span className="font-bold text-xl text-slate-800">MySite</span>
+              <span className="font-bold text-xl text-slate-800">{brandName}</span>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Features</a>
-                <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Pricing</a>
-                <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">About</a>
+                {links.map(link => (
+                  <a key={link} href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">{link}</a>
+                ))}
               </div>
             </div>
           </div>
           <div className="hidden md:block">
-            <a href="#" className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700">Get Started</a>
+            <a href="#" className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700">{ctaText}</a>
           </div>
           <div className="-mr-2 flex md:hidden">
             <button onClick={() => setIsOpen(!isOpen)} type="button" className="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false">
@@ -47,11 +54,10 @@ const Navbar: React.FC<BlockComponentProps> = () => {
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Home</a>
-            <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Features</a>
-            <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
-            <a href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">About</a>
-            <a href="#" className="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700 mt-2">Get Started</a>
+            {links.map(link => (
+              <a key={link} href="#" className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">{link}</a>
+            ))}
+            <a href="#" className="bg-indigo-600 text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700 mt-2">{ctaText}</a>
           </div>
         </div>
       )}

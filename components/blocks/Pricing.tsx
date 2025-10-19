@@ -1,8 +1,6 @@
-
 import React from 'react';
-import { BlockComponentProps } from '../../types';
 
-const tiers = [
+const defaultTiers = [
   {
     name: 'Starter',
     price: '29',
@@ -29,27 +27,46 @@ const tiers = [
   },
 ];
 
+interface Tier {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    cta: string;
+    popular: boolean;
+}
+
+interface PricingProps {
+    title?: string;
+    subtitle?: string;
+    pricingTiers?: Tier[];
+}
+
 const CheckIcon: React.FC<{className?:string}> = ({className}) => (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
     </svg>
 )
 
-const Pricing: React.FC<BlockComponentProps> = () => {
+const Pricing: React.FC<PricingProps> = ({
+    title = 'The right price for you, whoever you are',
+    subtitle = 'Simple, transparent pricing that scales with your needs. No hidden fees.',
+    pricingTiers = defaultTiers
+}) => {
   return (
     <div className="bg-gray-50 py-12 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">Pricing</h2>
           <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            The right price for you, whoever you are
+            {title}
           </p>
           <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
-            Simple, transparent pricing that scales with your needs. No hidden fees.
+            {subtitle}
           </p>
         </div>
         <div className="mt-16 grid gap-8 lg:grid-cols-3">
-          {tiers.map((tier) => (
+          {pricingTiers.slice(0, 3).map((tier) => (
             <div key={tier.name} className={`flex flex-col rounded-lg shadow-lg overflow-hidden ${tier.popular ? 'border-2 border-indigo-500' : ''}`}>
               <div className="px-6 py-8 bg-white sm:p-10 sm:pb-6">
                 <div>
@@ -59,7 +76,7 @@ const Pricing: React.FC<BlockComponentProps> = () => {
                   {tier.popular && <span className="ml-3 inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-pink-100 text-pink-800">Most popular</span>}
                 </div>
                 <div className="mt-4 flex items-baseline text-6xl font-extrabold text-gray-900">
-                  {tier.price !== 'Custom' && <span className="text-4xl mr-1">$</span>}
+                  {tier.price !== 'Custom' && !tier.price.startsWith('$') && <span className="text-4xl mr-1">$</span>}
                   {tier.price}
                   {tier.price !== 'Custom' && <span className="text-2xl font-medium text-gray-500">/mo</span>}
                 </div>

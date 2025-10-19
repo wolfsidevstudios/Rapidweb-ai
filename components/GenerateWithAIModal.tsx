@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { generatePageLayout } from '../services/geminiService';
 import { Block, BlockType } from '../types';
@@ -24,14 +23,18 @@ export const GenerateWithAIModal: React.FC<GenerateWithAIModalProps> = ({ onClos
     setError(null);
 
     try {
-      const blockTypes: BlockType[] = await generatePageLayout(prompt);
-      const newBlocks: Block[] = blockTypes.map((type, index) => {
-        const blockConfig = AVAILABLE_BLOCKS.flatMap(cat => cat.blocks).find(b => b.type === type);
+      const layoutWithContent = await generatePageLayout(prompt);
+      // FIX: Explicitly type the return of the map function to `Block | null`.
+      // This resolves a TypeScript error where the inferred type from the returned object (with a required `props` property)
+      // was not compatible with the `Block` type (which has an optional `props` property) used in the `.filter` type predicate.
+      const newBlocks: Block[] = layoutWithContent.map((item, index): Block | null => {
+        const blockConfig = AVAILABLE_BLOCKS.flatMap(cat => cat.blocks).find(b => b.type === item.type);
         if (!blockConfig) return null;
         return {
           id: new Date().getTime() + index,
-          type,
+          type: item.type,
           component: blockConfig.component,
+          props: item.props,
         };
       }).filter((b): b is Block => b !== null);
       

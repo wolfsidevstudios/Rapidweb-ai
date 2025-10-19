@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Block, Device, BlockType } from '../types';
 import CanvasBlock from './CanvasBlock';
@@ -98,7 +97,7 @@ const Canvas: React.FC<CanvasProps> = ({ blocks, onDrop, moveBlock, deleteBlock,
                   onDelete={() => deleteBlock(block.id)}
                   onDuplicate={() => duplicateBlock(block.id, index)}
                 >
-                  <block.component />
+                  <block.component {...block.props} />
                 </CanvasBlock>
                 {renderDropZone(index + 1)}
               </div>
